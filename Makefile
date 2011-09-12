@@ -22,6 +22,9 @@ clean:
 	rm -rf build ncc.egg-info dist
 	env/bin/python ncc/__init__.py clean
 
+tidy: clean
+	rm -rf env
+
 push:
 	echo "Not yet"
 	#rsync -avz -e ssh src Makefile dependencies.txt crawl.sh \
