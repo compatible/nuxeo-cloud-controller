@@ -1,9 +1,9 @@
 #!/usr/bin/env python
+
+from ncc.commands import *
+from unittest import TestCase
 import urllib
 import time
-
-from ncc import *
-from unittest import TestCase
 
 class FunctionalTestCase(TestCase):
 
