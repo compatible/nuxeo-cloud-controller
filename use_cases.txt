@@ -1,0 +1,18 @@
+Some samples use cases
+======================
+
+# Create instance for user "john@example.com"
+$ ncc create -u john@example.com
+Instance #123 created
+
+# Start
+$ ncc start 123
+Instance #123 started
+
+# Stop
+$ ncc stop 123
+Instance #123 started
+
+# Show instance
+$ ncc info 123
+...
