@@ -194,7 +194,7 @@ class Instance(Base):
       return
     log_file = "%s/nginx/log/access-%s.log" % (HOME, self.iid)
     last_hit_time = os.stat(log_file).st_mtime
-    if time.time() - last_hit_time > 60:
+    if time.time() - last_hit_time > INACTIVITY_TIME:
       print "Putting instance %s to sleep" % self.iid
       self.stop()
 
