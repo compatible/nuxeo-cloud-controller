@@ -1,5 +1,12 @@
 from config import *
 from util import *
+
+from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import create_engine
+from sqlalchemy.schema import Sequence
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
 from datetime import datetime
 from pprint import pformat
 
@@ -44,18 +51,9 @@ server {
 }
 """
 
-#
-# ORM part
-#
-from sqlalchemy import Column, String, Integer, DateTime
-from sqlalchemy import create_engine
-from sqlalchemy.schema import Sequence
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-
 Base = declarative_base()
 engine = create_engine('sqlite:///' + DB) #, echo=True)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(engine)
 session = Session()
 
 class Instance(Base):
@@ -65,11 +63,13 @@ class Instance(Base):
   iid = Column(Integer, Sequence('instance_id_seq'), primary_key=True)
   state = Column(String(10))
   owner = Column(String(100))
+  name = Column(String(30), unique=True, nullable=False)
   created = Column(DateTime, default=datetime.now)
   #port = Column(Integer)
 
-  def __init__(self, owner=""):
-    self.state = CREATED
+  def __init__(self, name="", owner=""):
+    self.state = READY
+    self.name = name
     self.owner = owner
 
   def __repr__(self):
@@ -144,41 +144,59 @@ class Instance(Base):
     fd.write(config)
     fd.close()
 
+  def setup_nginx_config(self, reload=True):
+    conf_path = "%s/nginx/vhosts/%s.conf" % (HOME, self.iid)
+    if not self.state in (RUNNING, READY):
+      if os.path.exists(conf_path):
+        os.unlink(conf_path)
+      return
+
+    if self.state == RUNNING:
+      vhost_conf = NGINX_UP % {
+          'HOME': HOME,
+          'iid': self.iid,
+          'hostname': self.hostname,
+          'port': self.port}
+    else:
+      vhost_conf = NGINX_DOWN % {
+          'HOME': HOME,
+          'iid': self.iid,
+          'hostname': self.hostname,
+      }
+    fd = open(conf_path, "wc")
+    fd.write(vhost_conf)
+    fd.close()
+    if reload:
+      reload_nginx()
+
   def start(self):
     if self.state == READY:
       system("%s/bin/nuxeoctl start" % self.home)
+    else:
+      raise Exception("Not ready")
+    self.state = RUNNING
+    self.setup_nginx_config()
 
   def stop(self):
     if self.state == RUNNING:
       system("%s/bin/nuxeoctl stop" % self.home)
+    else:
+      raise Exception("Not running")
     self.state = READY
+    self.setup_nginx_config()
 
   def purge(self):
-    system("rm -rf %s" % self.home)
     system("dropdb %s" % self.db_name)
+    system("rm -rf %s" % self.home)
 
-  def start_proxying(self):
-    vhost_conf = NGINX_UP % {
-        'HOME': HOME,
-        'iid': self.iid,
-        'hostname': self.hostname,
-        'port': self.port}
-    fd = open("%s/nginx/vhosts/%s.conf" % (HOME, self.iid), "wc")
-    fd.write(vhost_conf)
-    fd.close()
-    system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
-
-  def stop_proxying(self):
-    vhost_conf = NGINX_DOWN % {
-        'HOME': HOME,
-        'iid': self.iid,
-        'hostname': self.hostname,
-    }
-    fd = open("%s/nginx/vhosts/%s.conf" % (HOME, self.iid), "wc")
-    fd.write(vhost_conf)
-    fd.close()
-    system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
-
+  def monitor(self):
+    if not self.state == RUNNING:
+      return
+    log_file = "%s/nginx/log/access-%s.log" % (HOME, self.iid)
+    last_hit_time = os.stat(log_file).st_mtime
+    if time.time() - last_hit_time > 60:
+      print "Putting instance %s to sleep" % self.iid
+      self.stop()
 
 def get_instance(iid):
   iid = int(iid)
@@ -189,3 +207,5 @@ def get_instance(iid):
 
 def all_instances():
   return session.query(Instance).all()
+
+Base.metadata.create_all(engine)

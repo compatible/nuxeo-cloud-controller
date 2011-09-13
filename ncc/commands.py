@@ -11,6 +11,8 @@ def cmd_clean():
   """Drop database and remove all instances (useful for debugging).
   """
   for instance in all_instances():
+    if instance.state == RUNNING:
+      instance.stop()
     instance.purge()
     session.delete(instance)
     session.commit()
@@ -34,16 +36,21 @@ def cmd_boot():
   fd.write(nginx_conf)
   fd.close()
 
-  system("nginx -c %s/nginx/nginx.conf" % HOME)
+  for instance in all_instances():
+    instance.setup_nginx_config(reload=False)
+
+  start_nginx()
 
 
 def cmd_halt():
   """Shutdown the system.
   """
   for instance in all_instances():
-    instance.stop()
+    if instance.state == RUNNING:
+      instance.stop()
   # TODO: stop postgresql
-  system("nginx -c %s/nginx/nginx.conf -s stop" % HOME)
+  if is_nginx_running():
+    stop_nginx()
 
 
 def cmd_create():
@@ -56,13 +63,10 @@ def cmd_create():
 
   instance.setup()
   print "New instance created with id: %d" % instance.iid
-  instance.state = READY
   session.commit()
 
   instance.start()
-  instance.state = RUNNING
   session.commit()
-  instance.start_proxying()
   print "Instance %s started on port %d" % (instance.iid, instance.port)
 
   return instance
@@ -72,8 +76,9 @@ def cmd_start(iid):
   """Starts the given instance.
   """
   instance = get_instance(iid)
+  if instance.state != READY:
+    raise Exception("Can't start an instance that is not ready")
   instance.start()
-  instance.start_proxying()
   session.commit()
   print "Instance %d started on port %d" % (instance.iid, instance.port)
 
@@ -82,7 +87,8 @@ def cmd_stop(iid):
   """Stops the given instance.
   """
   instance = get_instance(iid)
-  instance.stop_proxying()
+  if instance.state != RUNNING:
+    raise Exception("Can't stop an instance that is not running")
   instance.stop()
   session.commit()
   print "Instance %d stopped" % instance.iid
@@ -106,6 +112,14 @@ def cmd_purge(iid):
     raise Exception("Can't purge an instance that is not destroyed")
   instance.purge()
   session.delete(instance)
+  session.commit()
+
+
+def cmd_monitor():
+  """Scans all the instances and stops those that can be stopped.
+  """
+  for instance in all_instances():
+    instance.monitor()
   session.commit()
 
 

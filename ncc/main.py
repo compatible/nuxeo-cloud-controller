@@ -1,4 +1,6 @@
-from config import *
+#!/usr/bin/env python
+
+from commands import *
 import sys, getopt
 
 #
@@ -19,11 +21,15 @@ def run(argv):
 
 
 def main():
+  if len(sys.argv) == 1:
+    args = ["help"]
+  else:
+    args = sys.argv[1:]
   if DEBUG:
-    run(sys.argv[1:])
+    run(args)
   else:
     try:
-      run(sys.argv[1:])
+      run(args)
     except Exception, e:
       print e.message
       sys.exit(1)

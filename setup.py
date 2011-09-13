@@ -14,7 +14,7 @@ setup(
     tests_require=['nose'],
     entry_points={
         'console_scripts': [
-            'ncc = ncc:main',
+            'ncc = ncc.main:main',
         ]
     },
     classifiers=[

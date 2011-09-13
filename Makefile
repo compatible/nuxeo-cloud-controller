@@ -1,26 +1,30 @@
-.PHONY: test setup-env
-
-install:
-	python setup.py install
+.PHONY: test setup-env install check clean tidy
 
 test: env
-	env/bin/python ncc/__init__.py halt
-	env/bin/python ncc/__init__.py clean
-	env/bin/python ncc/__init__.py boot
+	env/bin/python ncc/main.py halt
+	env/bin/python ncc/main.py clean
+	env/bin/python ncc/main.py boot
 	nosetests -v
 
+install:
+	pip install . --upgrade -r deps.txt
+
+check:
+	pyflakes ncc
+
 env:
-	env/bin/pip install --upgrade -s -E env -r deps.txt
-	echo "Remember to run "source env/bin/activate"
+	pip install --upgrade -s -E env -r deps.txt
+	echo "Remember to run 'source env/bin/activate'"
 
 setup-env:
-	env/bin/pip install --upgrade -s -E env -r deps.txt
+	pip install --upgrade -s -E env -r deps.txt
 	echo "Remember to run "source env/bin/activate"
 
 clean:
 	find . -name "*.pyc" | xargs rm -f
 	rm -rf build ncc.egg-info dist
-	env/bin/python ncc/__init__.py clean
+	env/bin/python ncc/main.py halt
+	env/bin/python ncc/main.py clean
 
 tidy: clean
 	rm -rf env
