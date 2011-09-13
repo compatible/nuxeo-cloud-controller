@@ -38,6 +38,9 @@ Typical scenario is:
 - ncc stop <iid>
 - ncc destroy <iid>
 
+Currently, instance with iid (instance id) <iid> will be mapped to host
+"nuxeo<iid>". This can be changed in model.py.
+
 Run "ncc help" for more info.
 
 I parallel, you need to start the web server ("ncc server") and from
