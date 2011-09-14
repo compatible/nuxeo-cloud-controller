@@ -20,6 +20,7 @@ def cmd_clean():
   #os.unlink(DB)
   system("rm -rf %s/nginx" % HOME)
 
+
 def cmd_boot():
   """Boot the system.
   """
@@ -35,6 +36,8 @@ def cmd_boot():
   fd = open("%s/nginx/nginx.conf" % HOME, "wc")
   fd.write(nginx_conf)
   fd.close()
+  
+  Base.metadata.create_all(engine)
 
   for instance in all_instances():
     instance.setup_nginx_config(reload=False)

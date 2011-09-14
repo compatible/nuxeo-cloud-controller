@@ -57,6 +57,7 @@ Lots of things:
 - Make a nice admin interface using the web server
 - Make an end-user interface using the web server ?
 - Create a command-line tool for the users (a la vmc) ?
+- User supervisord to launch / control the processes
 
 Cleanup:
 

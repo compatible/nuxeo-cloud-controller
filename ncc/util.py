@@ -5,10 +5,10 @@ from config import *
 #
 # Utilities
 #
-def system(cmd):
+def system(cmd, ignore_err=False):
   print cmd
   ret = os.system(cmd)
-  if ret:
+  if ret and not ignore_err:
     print "Error, exiting."
     raise Exception("Shell command exited with error")
 

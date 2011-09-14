@@ -5,11 +5,12 @@ from setuptools import setup, find_packages
 setup(
     name='ncc',
     version="0.1",
-    description='ncc is the Nuxeo Cloud Controler',
+    description='ncc is the Nuxeo Cloud Controller',
     author='Stefane Fermigier',
     author_email='sf@nuxeo.com',
-    url='http://',
+    url='https://github.com/compatible/nuxeo-cloud-controler',
     packages=find_packages(),
+    data_files=[(('config', ['nginx.conf']))],
     test_suite='nose.collector',
     tests_require=['nose'],
     entry_points={

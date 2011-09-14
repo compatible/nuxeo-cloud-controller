@@ -186,7 +186,7 @@ class Instance(Base):
     self.setup_nginx_config()
 
   def purge(self):
-    system("dropdb %s" % self.db_name)
+    system("dropdb %s" % self.db_name, ignore_err=True)
     system("rm -rf %s" % self.home)
 
   def monitor(self):
@@ -208,4 +208,3 @@ def get_instance(iid):
 def all_instances():
   return session.query(Instance).all()
 
-Base.metadata.create_all(engine)
