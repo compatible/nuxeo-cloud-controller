@@ -2,8 +2,6 @@ from model import *
 from util import system
 import server
 
-import os
-
 #
 # Commands
 #
@@ -25,18 +23,8 @@ def cmd_boot():
   """Boot the system.
   """
   # TODO: setup/start postgresql
-  if not os.path.exists("%s/nginx" % HOME):
-    os.mkdir("%s/nginx" % HOME)
-  if not os.path.exists("%s/nginx/vhosts" % HOME):
-    os.mkdir("%s/nginx/vhosts" % HOME)
-  if not os.path.exists("%s/nginx/log" % HOME):
-    os.mkdir("%s/nginx/log" % HOME)
-  nginx_conf = open("nginx.conf").read()
-  nginx_conf = nginx_conf.replace("##HOME##", HOME)
-  fd = open("%s/nginx/nginx.conf" % HOME, "wc")
-  fd.write(nginx_conf)
-  fd.close()
-  
+  setup_nginx()
+
   Base.metadata.create_all(engine)
 
   for instance in all_instances():

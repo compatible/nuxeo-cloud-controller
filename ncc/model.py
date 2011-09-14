@@ -1,5 +1,5 @@
+from nginx import *
 from config import *
-from util import *
 
 from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy import create_engine

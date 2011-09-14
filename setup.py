@@ -10,7 +10,8 @@ setup(
     author_email='sf@nuxeo.com',
     url='https://github.com/compatible/nuxeo-cloud-controler',
     packages=find_packages(),
-    data_files=[(('config', ['nginx.conf']))],
+    data_files=[('ncc', ['config/nginx.conf']),
+                ('ncc', ['config/'])],
     test_suite='nose.collector',
     tests_require=['nose'],
     entry_points={
