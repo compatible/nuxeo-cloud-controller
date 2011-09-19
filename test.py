@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-from ncc.config import *
+from ncc.config import PORT
 from ncc.commands import *
+from ncc.processes import supervisor
+
 from unittest import TestCase
 import urllib
 import time
@@ -9,7 +11,7 @@ import time
 class FunctionalTestCase(TestCase):
 
   @classmethod
-  def setUpClass(self):
+  def setUpClass(cls):
     cmd_clean()
     cmd_boot()
 
@@ -35,3 +37,11 @@ class FunctionalTestCase(TestCase):
     cmd_stop(iid)
     cmd_destroy(iid)
     cmd_purge(iid)
+
+class SupervisorTestCase(TestCase):
+  
+  def test(self):
+    supervisor.gen_conf()
+    supervisor.start()
+    time.sleep(5)
+    supervisor.stop()

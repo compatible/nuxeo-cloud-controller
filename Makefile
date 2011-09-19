@@ -3,7 +3,6 @@
 test: env
 	env/bin/python ncc/main.py halt
 	env/bin/python ncc/main.py clean
-	env/bin/python ncc/main.py boot
 	nosetests -v
 
 install:

@@ -9,7 +9,7 @@ HOME = "/Users/fermigier/nuxeocloud/"
 MODEL = HOME + "models/nuxeo-dm-5.4.2-tomcat"
 
 # You probably dont' want to touch these
-INSTANCES = HOME + "instances/"
+INSTANCES_HOME = HOME + "instances/"
 DB = HOME + "nuxeocloud.db"
 
 # Port for nginx
@@ -23,6 +23,7 @@ DEBUG = True
 
 NGINX_CONF = """
 #user  nobody;
+daemon off;
 worker_processes  1;
 
 error_log ##HOME##/nginx/log/error.log info;

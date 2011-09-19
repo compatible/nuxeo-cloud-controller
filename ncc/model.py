@@ -1,4 +1,6 @@
-from nginx import *
+from nginx import reload_nginx
+from processes import supervisor
+from util import system
 from config import *
 
 from sqlalchemy import Column, String, Integer, DateTime
@@ -7,6 +9,7 @@ from sqlalchemy.schema import Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+import os, time
 from datetime import datetime
 from pprint import pformat
 
@@ -63,19 +66,23 @@ class Instance(Base):
   iid = Column(Integer, Sequence('instance_id_seq'), primary_key=True)
   state = Column(String(10))
   owner = Column(String(100))
-  name = Column(String(30), unique=True, nullable=False)
+  #name = Column(String(30), unique=True, nullable=False)
   created = Column(DateTime, default=datetime.now)
   #port = Column(Integer)
 
   def __init__(self, name="", owner=""):
     self.state = READY
-    self.name = name
+    # TODO
+    #self.name = name
     self.owner = owner
 
   def __repr__(self):
     return pformat(self.__dict__)
 
   ## Properties
+  @property
+  def name(self):
+    return "nuxeo%d" % self.iid
 
   @property
   def home(self):
@@ -170,19 +177,21 @@ class Instance(Base):
       reload_nginx()
 
   def start(self):
-    if self.state == READY:
-      system("%s/bin/nuxeoctl start" % self.home)
-    else:
+    if self.state != READY:
       raise Exception("Not ready")
     self.state = RUNNING
+    supervisor.gen_conf()
+    supervisor.reload()
+    supervisor.start_service(self.name)
     self.setup_nginx_config()
 
   def stop(self):
-    if self.state == RUNNING:
-      system("%s/bin/nuxeoctl stop" % self.home)
-    else:
+    if self.state != RUNNING:
       raise Exception("Not running")
     self.state = READY
+    supervisor.stop_service(self.name)
+    supervisor.gen_conf()
+    supervisor.reload()
     self.setup_nginx_config()
 
   def purge(self):

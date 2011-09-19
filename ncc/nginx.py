@@ -1,7 +1,6 @@
 from util import *
 from config import *
 import psi.process
-import time
 
 
 def is_nginx_running():
@@ -14,35 +13,11 @@ def is_nginx_running():
     return False
   return process_table[pid].name == 'nginx'
 
-def start_nginx():
-  assert not is_nginx_running()
-  if not is_nginx_running():
-    system("nginx -c %s/nginx/nginx.conf" % HOME)
-    time.sleep(5)
-  else:
-    print "nginx already running"
-
-def stop_nginx():
-  assert is_nginx_running()
-  if is_nginx_running():
-    system("nginx -c %s/nginx/nginx.conf -s stop" % HOME)
-  else:
-    print "nginx not running"
-
 def reload_nginx():
-  assert is_nginx_running()
-  if not is_nginx_running():
-    print "nginx not running, starting it"
-    system("nginx -c %s/nginx/nginx.conf" % HOME)
-    time.sleep(5)
-  else:
-    try:
-      system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
-      time.sleep(5)
-    except:
-      print "nginx not running, starting it"
-      system("nginx -c %s/nginx/nginx.conf" % HOME)
-      time.sleep(5)
+  if is_nginx_running():
+    from processes import supervisor
+    supervisor.restart_service("nginx")
+    system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
 
 def setup_nginx():
   if not os.path.exists(HOME + "/nginx"):

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from commands import *
+from config import DEBUG
 import sys, getopt
 
 #

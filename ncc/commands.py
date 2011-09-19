@@ -1,6 +1,10 @@
-from model import *
+from config import HOME
+from model import Instance, session, all_instances, get_instance, Base, engine
+from model import RUNNING, READY, DESTROYED
 from util import system
 import server
+from processes import supervisor
+from nginx import setup_nginx
 
 #
 # Commands
@@ -20,17 +24,20 @@ def cmd_clean():
 
 
 def cmd_boot():
-  """Boot the system.
+  """Boot the system. Should only be called once after a reboot.
   """
   # TODO: setup/start postgresql
+  supervisor.gen_conf()
   setup_nginx()
 
   Base.metadata.create_all(engine)
 
   for instance in all_instances():
+    if instance.state == RUNNING:
+      instance.state = READY
     instance.setup_nginx_config(reload=False)
 
-  start_nginx()
+  supervisor.start()
 
 
 def cmd_halt():
@@ -40,8 +47,7 @@ def cmd_halt():
     if instance.state == RUNNING:
       instance.stop()
   # TODO: stop postgresql
-  if is_nginx_running():
-    stop_nginx()
+  supervisor.stop()
 
 
 def cmd_create():

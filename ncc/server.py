@@ -16,6 +16,7 @@ def ping(iid):
   instance = g.session.query(Instance).filter_by(iid=iid).first()
   if instance is None:
     raise Exception("Instance %d does not exist." % iid)
+  print "Starting instance", iid
   instance.start()
   g.session.commit()
   return "Please wait a few seconds and hit <refresh> (CRTL-R)."
