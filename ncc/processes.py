@@ -1,5 +1,6 @@
 # Note: this package is called "processes" and not "supervisor" to prevent collision with
 # the supervisor package. Might not be needed actually. TODO: check this.
+import time
 
 from util import system
 from config import HOME
@@ -48,7 +49,7 @@ class Supervisor(object):
     system("supervisorctl -c %s/supervisor.conf restart %s" % (HOME, name))
 
   def reload(self):
-    system("supervisorctl -c %s/supervisor.conf reload" % HOME)
+    system("supervisorctl -c %s/supervisor.conf reread" % HOME)
 
   def gen_conf(self):
     print "!!! GENERATING SUPERVISOR CONF !!!"

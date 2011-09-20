@@ -15,8 +15,6 @@ def is_nginx_running():
 
 def reload_nginx():
   if is_nginx_running():
-    from processes import supervisor
-    supervisor.restart_service("nginx")
     system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
 
 def setup_nginx():
