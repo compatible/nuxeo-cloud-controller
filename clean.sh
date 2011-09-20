@@ -20,3 +20,4 @@ done
 \rm -rf ~/nuxeocloud/nuxeocloud.db
 
 supervisorctl -c ~/nuxeocloud//supervisor.conf shutdown
+

@@ -21,11 +21,27 @@ What it does
 Install
 -------
 
+You need Python and pip (maybe easy_install too).
+
 Simply running "python setup.py install" should be enough, if you have installed
 all the dependencies (run "sudo pip install -r deps.txt" first).
 
 You can also use "make env" to create a virtualenv, then activate it
 with "source env/bin/activate".
+
+To test, you need to create a nuxeocloud directory in your home directory with a
+certain structure. You can use "sh setup.sh" for this.
+
+You would a wildcard DNS for the system to work. Since that's not practical, you can
+add to your /etc/hosts file something like:
+
+127.0.0.1            nuxeo1 nuxeo2 nuxeo3 nuxeo4 nuxeo5
+
+(Assuming you will never test more than 5 instances).
+
+Postgresql needs to be started.
+
+You also need to be sudoer (on Linux). (Of course this will be relaxed in the future).
 
 Using
 -----
