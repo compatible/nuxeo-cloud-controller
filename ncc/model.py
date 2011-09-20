@@ -135,7 +135,8 @@ class Instance(Base):
     system("ln -sf %s/nxserver/bundles %s/nxserver/bundles" % (MODEL, self.home))
 
   def setup_db(self):
-    system("createdb %s" % self.db_name)
+    try: system("createdb %s" % self.db_name)
+    except: system("sudo su postgres -c 'createdb %s'" % self.db_name)
 
   def setup_config(self):
     config = open("%s/bin/nuxeo.conf" % self.home).read()
@@ -195,7 +196,8 @@ class Instance(Base):
     self.setup_nginx_config()
 
   def purge(self):
-    system("dropdb %s" % self.db_name, ignore_err=True)
+    try: system("dropdb %s" % self.db_name)
+    except: system("sudo su postgres -c 'dropdb %s'" % self.db_name)
     system("rm -rf %s" % self.home)
 
   def monitor(self):
