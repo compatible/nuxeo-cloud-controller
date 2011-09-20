@@ -49,7 +49,7 @@ class Supervisor(object):
     system("supervisorctl -c %s/supervisor.conf restart %s" % (HOME, name))
 
   def reload(self):
-    system("supervisorctl -c %s/supervisor.conf reread" % HOME)
+    system("supervisorctl -c %s/supervisor.conf update" % HOME)
 
   def gen_conf(self):
     print "!!! GENERATING SUPERVISOR CONF !!!"

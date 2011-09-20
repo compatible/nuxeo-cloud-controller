@@ -12,5 +12,7 @@ do
   kill $pid
 done
 
-\rm -rf ~/nuxeocloud/instances
+\rm -rf ~/nuxeocloud/instances/*
 \rm -rf ~/nuxeocloud/nuxeocloud.db
+
+supervisorctl -c /Users/fermigier/nuxeocloud//supervisor.conf shutdown

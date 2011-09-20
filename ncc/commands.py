@@ -26,11 +26,12 @@ def cmd_clean():
 def cmd_boot():
   """Boot the system. Should only be called once after a reboot.
   """
+  Base.metadata.create_all(engine)
+
   # TODO: setup/start postgresql
   supervisor.gen_conf()
   setup_nginx()
 
-  Base.metadata.create_all(engine)
 
   for instance in all_instances():
     if instance.state == RUNNING:
