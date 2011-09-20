@@ -2,13 +2,15 @@
 # Constants (move to config file later)
 #
 
-# Contains all the instances as well as the DB and nginx files
-HOME = "/Users/fermigier/nuxeocloud/"
+import os
 
-# The model (or template) that duplicated upon instance creation
+# Contains all the instances as well as the DB and nginx files
+HOME = os.environ['HOME'] + "/nuxeocloud/"
+
+# The "model" (or template) that is duplicated upon instance creation
 MODEL = HOME + "models/nuxeo-dm-5.4.2-tomcat"
 
-# You probably dont' want to touch these
+# You probably don't want to touch these
 INSTANCES_HOME = HOME + "instances/"
 DB = HOME + "nuxeocloud.db"
 
