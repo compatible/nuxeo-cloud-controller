@@ -9,13 +9,15 @@ def is_nginx_running():
     return False
   pid = int(open(pid_path).read())
   process_table = psi.process.ProcessTable()
-  if not process_table.has_key(pid):
+  if not pid in process_table:
     return False
   return process_table[pid].name == 'nginx'
+
 
 def reload_nginx():
   if is_nginx_running():
     system("nginx -c %s/nginx/nginx.conf -s reload" % HOME)
+
 
 def setup_nginx():
   if not os.path.exists(HOME + "/nginx"):

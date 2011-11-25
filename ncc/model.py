@@ -9,7 +9,8 @@ from sqlalchemy.schema import Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-import os, time
+import os
+import time
 from datetime import datetime
 from pprint import pformat
 
@@ -55,9 +56,10 @@ server {
 """
 
 Base = declarative_base()
-engine = create_engine('sqlite:///' + DB) #, echo=True)
+engine = create_engine('sqlite:///' + DB)  # , echo=True)
 Session = sessionmaker(engine)
 session = Session()
+
 
 class Instance(Base):
   __tablename__ = "instance"
@@ -132,11 +134,14 @@ class Instance(Base):
     system("rm -rf %s/nxserver/lib" % self.home)
     system("rm -rf %s/nxserver/bundles" % self.home)
     system("ln -sf %s/nxserver/lib %s/nxserver/lib" % (MODEL, self.home))
-    system("ln -sf %s/nxserver/bundles %s/nxserver/bundles" % (MODEL, self.home))
+    system("ln -sf %s/nxserver/bundles %s/nxserver/bundles"
+        % (MODEL, self.home))
 
   def setup_db(self):
-    try: system("createdb %s" % self.db_name)
-    except: system("sudo su postgres -c 'createdb %s'" % self.db_name)
+    try:
+      system("createdb %s" % self.db_name)
+    except:
+      system("sudo su postgres -c 'createdb %s'" % self.db_name)
 
   def setup_config(self):
     config = open("%s/bin/nuxeo.conf" % self.home).read()
@@ -196,8 +201,10 @@ class Instance(Base):
     self.setup_nginx_config()
 
   def purge(self):
-    try: system("dropdb %s" % self.db_name)
-    except: system("sudo su postgres -c 'dropdb %s'" % self.db_name)
+    try:
+      system("dropdb %s" % self.db_name)
+    except:
+      system("sudo su postgres -c 'dropdb %s'" % self.db_name)
     system("rm -rf %s" % self.home)
 
   def monitor(self):
@@ -209,6 +216,7 @@ class Instance(Base):
       print "Putting instance %s to sleep" % self.iid
       self.stop()
 
+
 def get_instance(iid):
   iid = int(iid)
   instance = session.query(Instance).filter_by(iid=iid).first()
@@ -216,6 +224,6 @@ def get_instance(iid):
     raise Exception("Instance %d does not exist." % iid)
   return instance
 
+
 def all_instances():
   return session.query(Instance).all()
-

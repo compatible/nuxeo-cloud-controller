@@ -9,7 +9,9 @@ install:
 	pip install . --upgrade -r deps.txt
 
 check:
-	pyflakes ncc
+	pep8 --exclude env -r --ignore E111,E225,E501 .
+	pylint -d W0311 ncc
+	#pyflakes ncc
 
 env:
 	pip install --upgrade -s -E env -r deps.txt

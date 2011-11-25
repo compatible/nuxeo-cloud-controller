@@ -8,6 +8,7 @@ from unittest import TestCase
 import urllib
 import time
 
+
 class FunctionalTestCase(TestCase):
 
   @classmethod
@@ -38,8 +39,9 @@ class FunctionalTestCase(TestCase):
     cmd_destroy(iid)
     cmd_purge(iid)
 
+
 class SupervisorTestCase(TestCase):
-  
+
   def test(self):
     supervisor.gen_conf()
     supervisor.start()

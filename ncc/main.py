@@ -2,7 +2,9 @@
 
 from commands import *
 from config import DEBUG
-import sys, getopt
+import sys
+import getopt
+
 
 #
 # Main

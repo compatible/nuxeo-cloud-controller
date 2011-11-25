@@ -43,4 +43,3 @@ http {
   include "vhosts/*";
 }
 """
-

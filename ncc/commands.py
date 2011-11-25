@@ -6,6 +6,7 @@ import server
 from processes import supervisor
 from nginx import setup_nginx
 
+
 #
 # Commands
 #
@@ -31,7 +32,6 @@ def cmd_boot():
   # TODO: setup/start postgresql
   supervisor.gen_conf()
   setup_nginx()
-
 
   for instance in all_instances():
     if instance.state == RUNNING:
@@ -157,4 +157,3 @@ def cmd_help():
     if not name.startswith("cmd_"):
       continue
     print "- " + name[4:] + ": " + globals()[name].__doc__.strip()
-

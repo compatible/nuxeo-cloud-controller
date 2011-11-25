@@ -1,5 +1,7 @@
-# Note: this package is called "processes" and not "supervisor" to prevent collision with
-# the supervisor package. Might not be needed actually. TODO: check this.
+# Note: this package is called "processes" and not "supervisor"
+# to prevent collision with # the supervisor package.
+# Might not be needed actually. TODO: check this.
+
 import time
 
 from util import system
@@ -30,6 +32,7 @@ command=nginx -c %(HOME)s/nginx/nginx.conf
 autostart=true
 
 """
+
 
 class Supervisor(object):
 

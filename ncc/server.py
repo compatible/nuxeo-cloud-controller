@@ -6,9 +6,11 @@ from model import *
 from flask import Flask, g
 app = Flask(__name__)
 
+
 @app.before_request
 def connect_db():
   g.session = Session()
+
 
 @app.route("/ping/<iid>")
 def ping(iid):

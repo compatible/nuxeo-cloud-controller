@@ -14,6 +14,7 @@
 #
 ##############################################################################
 
+
 """ Wrapper that know how to kill both the nuxeo launcher and the nuxeo process.
 
 Might not be needed after all."""
@@ -23,6 +24,7 @@ import sys
 import signal
 import time
 from config import *
+
 
 class NuxeoWrapper(object):
 
@@ -69,6 +71,7 @@ class NuxeoWrapper(object):
         if sig in [signal.SIGTERM, signal.SIGINT, signal.SIGQUIT]:
             sys.exit(0)
 
+
 def main():
     try:
         iid = int(sys.argv[1])
@@ -81,6 +84,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
-    
-    
